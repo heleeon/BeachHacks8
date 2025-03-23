@@ -56,13 +56,20 @@ function App() {
     <div>
       <h1>Job Skill Match</h1>
       <div>
-        <textarea
-          placeholder="Paste Job Description Here"
-          value={jobDescription}
-          onChange={handleJobDescriptionChange}
-          rows="10"
-          cols="50"
-        />
+      <textarea
+        placeholder="Paste Job Description Here"
+        value={jobDescription}
+        onChange={handleJobDescriptionChange}
+        rows="10"
+        cols="50"
+        style={{
+          fontFamily: 'inherit',
+          letterSpacing: 'normal',
+          lineHeight: '1.5',
+          padding: '10px',
+          whiteSpace: 'pre-wrap'
+        }}
+      />
       </div>
       <div>
         <input type="file" onChange={handleResumeChange} />
@@ -71,11 +78,42 @@ function App() {
         <button onClick={analyzeJobAndResume}>Analyze</button>
       </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div>
-       
-      </div>
+      
     </div>
   );
 };
+function createCloud() {
+  const cloud = document.createElement('div');
+  cloud.className = 'moving-cloud';
+  
+  // Apply background image styles
+  cloud.style.backgroundImage = 'url("https://openclipart.org/download/193560/1400625045.svg")';
+  cloud.style.backgroundSize = 'contain';  // Changed to 'contain' to show whole image
+  cloud.style.backgroundPosition = 'center';  // Center the background image
+  cloud.style.backgroundRepeat = 'no-repeat';
+  
+  // Random cloud size
+  const size = Math.random() * (150 - 50) + 50;
+  cloud.style.width = `${size}px`;
+  cloud.style.height = `${size}px`;
+  
+  cloud.style.top = `${Math.random() * 80}vh`;
+  const duration = Math.random() * (120 - 60) + 60;
+  cloud.style.animationDuration = `${duration}s`;
+  
+  document.getElementById('root').appendChild(cloud);
+  
+  cloud.addEventListener('animationend', () => {
+    cloud.remove();
+  });
+}
+
+// Create new clouds periodically
+setInterval(createCloud, 10000); // Creates a new cloud every 10 seconds
+
+// Initial clouds
+for(let i = 0; i < 5; i++) {
+  setTimeout(createCloud, i * 1000);
+}
 
 export default App;
