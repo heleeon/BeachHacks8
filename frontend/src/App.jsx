@@ -22,22 +22,35 @@ function App() {
       setError("Please upload a resume and paste a job description.");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("resume", resumeFile);
     formData.append("job_description", jobDescription);
-
+  
     try {
       const response = await axios.post("http://127.0.0.1:5000/analyze", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      setResumeSkills(response.data.skills);
-      setJobFitScore(response.data.job_fit_score);
+      
+      if (response.data.result_id) {
+        // First fetch the results
+        const resultResponse = await axios.get(
+          `http://127.0.0.1:5000/results/${response.data.result_id}`
+        );
+        
+        // Update the state with the results
+        setResumeSkills(resultResponse.data.skills);
+        setJobFitScore(resultResponse.data.job_fit_score);
+        
+        // Open results in new tab
+        const resultUrl = `http://127.0.0.1:5000/results/${response.data.result_id}`;
+        window.open(resultUrl, '_blank');
+      }
     } catch (err) {
       setError("Error analyzing data: " + err.message);
     }
   };
+  
 
   return (
     <div>
