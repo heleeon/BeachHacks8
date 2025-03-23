@@ -4,6 +4,13 @@ import os
 import uuid
 import json
 import pdfplumber
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.linear_model import LogisticRegression
 
 app = Flask(__name__)
 CORS(app)
@@ -58,6 +65,10 @@ def analyze():
     # Perform skill analysis
     result = analyze_resume(resume_text, job_description)
 
+    # Predict recommended job
+    recommended_job = find_job_category(resume_text)
+    result['recommended_job'] = recommended_job
+
     result_id = str(uuid.uuid4())
     result_path = os.path.join(app.config['RESULTS_FOLDER'], f"{result_id}.json")
     with open(result_path, 'w') as f:
@@ -85,7 +96,6 @@ def extract_keywords(text):
     words = text.lower().split()
     return set(word.strip('.,!?()[]') for word in words if word.isalpha())
 
-
 def compare_resume_with_job(resume_text, job_text):
     resume_keywords = extract_keywords(resume_text)
     job_keywords = extract_keywords(job_text)
@@ -105,6 +115,31 @@ def analyze_resume(resume_text, job_description):
         'job_description': job_description,
         'resume_text': resume_text
     }
+
+
+def find_job_category(resume_text):
+    resume_csv = "data/UpdatedResumeDataSet.csv"
+    job_csv = "data/job_title_des.csv"
+
+    # Load datasets
+    df_resume = pd.read_csv(resume_csv)
+    df_job = pd.read_csv(job_csv)
+
+    # For training, use the resume dataset.
+    X = df_resume['Resume']
+    y = df_resume['Category']
+
+    pipeline = Pipeline([
+        ('tfidf', TfidfVectorizer(stop_words='english')),
+        ('chi2', SelectKBest(chi2, k=1000)),
+        ('clf', LogisticRegression(max_iter=1000))
+    ])
+
+    pipeline.fit(X, y)
+
+    # Predict category
+    predicted_category = pipeline.predict([resume_text])[0]
+    return predicted_category
 
 if __name__ == '__main__':
     app.run(debug=True)
