@@ -3,20 +3,10 @@ from flask_cors import CORS
 import os
 import uuid
 import json
-import spacy
-from pyresparser import ResumeParser
-
-# Load NLP model
-nlp = spacy.load('en_core_web_sm')
+import PyPDF2
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/*": {
-        "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
-    }
-})
+CORS(app)
 
 UPLOAD_FOLDER = 'uploads'
 RESULTS_FOLDER = 'results'
@@ -59,13 +49,11 @@ def analyze():
     file.save(file_path)
 
     try:
-        resume_data = ResumeParser(file_path).get_extracted_data()
+        resume_text = extract_text_from_pdf(file_path)
+        if not resume_text:
+            return jsonify({'error': 'Failed to extract text from PDF'}), 500
     except Exception as e:
-        return jsonify({'error': f'Failed to parse resume: {str(e)}'}), 500
-
-    resume_text = ' '.join(resume_data.get('experience', []) + resume_data.get('skills', []))
-    if not resume_text:
-        return jsonify({'error': 'Failed to extract text from resume'}), 500
+        return jsonify({'error': f'Failed to read resume: {str(e)}'}), 500
 
     # Perform skill analysis
     result = analyze_resume(resume_text, job_description)
@@ -80,13 +68,25 @@ def analyze():
         'redirect_url': f'/results/{result_id}'
     })
 
+def extract_text_from_pdf(file_path):
+    try:
+        with open(file_path, 'rb') as file:
+            pdf_reader = PyPDF2.PdfReader(file)
+            text = ''
+            for page in pdf_reader.pages:
+                text += page.extract_text() or ''
+            return text.strip()
+    except Exception as e:
+        print(f"Error extracting text: {e}")
+        return None
+
 def extract_keywords(text):
-    doc = nlp(text.lower())
-    return list(set([token.text for token in doc if not token.is_stop and token.is_alpha]))
+    words = text.lower().split()
+    return set(word.strip('.,!?()[]') for word in words if word.isalpha())
 
 def compare_resume_with_job(resume_text, job_text):
-    resume_keywords = set(extract_keywords(resume_text))
-    job_keywords = set(extract_keywords(job_text))
+    resume_keywords = extract_keywords(resume_text)
+    job_keywords = extract_keywords(job_text)
     missing_skills = job_keywords - resume_keywords
     return list(missing_skills)
 
@@ -94,7 +94,7 @@ def analyze_resume(resume_text, job_description):
     missing_skills = compare_resume_with_job(resume_text, job_description)
     job_fit_score = max(0, 100 - len(missing_skills) * 5)
     return {
-        'skills': extract_keywords(resume_text),
+        'skills': list(extract_keywords(resume_text)),
         'job_fit_score': job_fit_score,
         'missing_skills': missing_skills,
         'job_description': job_description,
