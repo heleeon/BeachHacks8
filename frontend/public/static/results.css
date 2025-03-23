@@ -1,0 +1,209 @@
+/* Overall page layout */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #e6f6ff 0%, #99d3ff 50%, #004d99 100%);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Container for the results page card */
+.result-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.result-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border-radius: 16px;
+  padding: 2em;
+  max-width: 800px;
+  width: 90%;
+  margin: 2rem auto;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Headings / descriptive text */
+.score-description {
+  font-size: 1.2em;
+  color: #333;
+  margin-bottom: 1em;
+}
+h1, h2 {
+  color: #00008b;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Score circle container */
+.score-circle {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  margin: 2em auto;
+}
+.circle-bg {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 15;
+}
+.circle {
+  fill: none;
+  stroke-width: 15;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 1s ease-in-out;
+}
+.percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  font-weight: bold;
+}
+
+/* Dynamic circle colors */
+.score-red {
+  stroke: #FF0000;
+  color: #FF0000;
+}
+.score-yellow {
+  stroke: #FFD700;
+  color: #FFD700;
+}
+.score-green {
+  stroke: #4CAF50;
+  color: #4CAF50;
+}
+.score-blue {
+  stroke: #0000FF;
+  color: #0000FF;
+}
+
+/* Skills container columns */
+.skills-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 2em;
+  margin: 2em 0;
+}
+.skills-column {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2em;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.matched-skills-container {
+  background: #e8f5e9;
+  border: 2px solid #4CAF50;
+}
+.missing-skills-container {
+  background: #ffebee;
+  border: 2px solid #ff0000;
+}
+
+/* skill lists */
+.matched-skills, .missing-skills {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
+  margin-top: 1em;
+}
+.matched-skills li,
+.missing-skills li {
+  padding: 0.5em 1em;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.matched-skills li {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 2px solid #4CAF50;
+}
+.matched-skills li:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+.missing-skills li {
+  background: #ffebee;
+  color: #d32f2f;
+  border: 2px solid #ff0000;
+}
+.missing-skills li:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+/* recommended categories */
+.recommended-job-container {
+  margin: 2em 0;
+}
+.job-category {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
+}
+.job-item {
+  background: #DAA520;
+  color: #00008B;
+  padding: 0.5em 1em;
+  border-radius: 20px;
+  border: 2px solid #b9922e;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+.job-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Resume & Job Text blocks */
+pre {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5em;
+  border-radius: 8px;
+  text-align: left;
+  overflow-x: auto;
+  margin: 1em 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* The row of buttons at the bottom */
+.button-row {
+  margin-top: 2em;
+}
+
+/* Nav Buttons (Back, Edit) */
+.nav-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 28px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+.nav-button:hover {
+  background-color: #45a049;
+}
+.nav-button-edit {
+  background-color: #DAA520;
+  color: #00008B;
+}
+.nav-button-edit:hover {
+  background-color: #c4971a;
+}
