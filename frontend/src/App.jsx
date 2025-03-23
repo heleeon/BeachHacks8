@@ -54,7 +54,7 @@ function App() {
 
   return (
     <div>
-      <h1>Job Skill Match</h1>
+      <h1>Clear Skies Resume</h1>
       <div>
       <textarea
         placeholder="Paste Job Description Here"
