@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 import uuid
 import json
-import PyPDF2
+import pdfplumber
 
 app = Flask(__name__)
 CORS(app)
@@ -68,17 +68,18 @@ def analyze():
         'redirect_url': f'/results/{result_id}'
     })
 
+
 def extract_text_from_pdf(file_path):
     try:
-        with open(file_path, 'rb') as file:
-            pdf_reader = PyPDF2.PdfReader(file)
-            text = ''
-            for page in pdf_reader.pages:
+        text = ''
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
                 text += page.extract_text() or ''
-            return text.strip()
+        return text.strip()
     except Exception as e:
-        print(f"Error extracting text: {e}")
+        print(f"Error extracting text with pdfplumber: {e}")
         return None
+
 
 def extract_keywords(text):
     words = text.lower().split()
