@@ -71,9 +71,8 @@
             font-size: 2em;
             font-weight: bold;
         }
-
-        /* New score color classes */
-        .score-red {
+                /* New score color classes */
+                .score-red {
             stroke: #FF0000;
             color: #FF0000;
         }
@@ -123,6 +122,14 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
+        .missing-skills li {
+            background: #FF6347;
+        }
+
+        .matched-skills li {
+            background: #4CAF50;
+        }
+
         pre {
             background: rgba(255, 255, 255, 0.9);
             padding: 1.5em;
@@ -169,14 +176,18 @@
                     {{ result.job_fit_score }}%
                 </div>
             </div>
-            <div class="skills">
-                <h2>Detected Skills</h2>
-                <ul>
-                    {% for skill in result.skills %}
-                        <li>{{ skill }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+            <h2>Matched Skills</h2>
+            <ul class="matched-skills">
+                {% for skill in result.matched_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+            <h2>Missing Skills</h2>
+            <ul class="missing-skills">
+                {% for skill in result.missing_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
             <h2>Job Description</h2>
             <pre>{{ result.job_description }}</pre>
             <h2>Resume Text</h2>

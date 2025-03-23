@@ -85,19 +85,23 @@ def extract_keywords(text):
     words = text.lower().split()
     return set(word.strip('.,!?()[]') for word in words if word.isalpha())
 
+
 def compare_resume_with_job(resume_text, job_text):
     resume_keywords = extract_keywords(resume_text)
     job_keywords = extract_keywords(job_text)
+    matched_skills = resume_keywords.intersection(job_keywords)
     missing_skills = job_keywords - resume_keywords
-    return list(missing_skills)
+    return list(matched_skills), list(missing_skills)
+
 
 def analyze_resume(resume_text, job_description):
-    missing_skills = compare_resume_with_job(resume_text, job_description)
+    matched_skills, missing_skills = compare_resume_with_job(resume_text, job_description)
     job_fit_score = max(0, 100 - len(missing_skills) * 5)
     return {
         'skills': list(extract_keywords(resume_text)),
-        'job_fit_score': job_fit_score,
+        'matched_skills': matched_skills,
         'missing_skills': missing_skills,
+        'job_fit_score': job_fit_score,
         'job_description': job_description,
         'resume_text': resume_text
     }
