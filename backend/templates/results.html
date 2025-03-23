@@ -9,7 +9,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
         }
-
+        
         #root {
             max-width: 1280px;
             margin: 0 auto;
@@ -36,7 +36,7 @@
         }
 
         h1, h2 {
-            color: #00008b;
+            color: #00008b;            
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             margin-bottom: 1.5em;
         }
@@ -78,10 +78,25 @@
             font-weight: bold;
         }
 
-        .score-red { stroke: #FF0000; color: #FF0000; }
-        .score-yellow { stroke: #FFD700; color: #FFD700; }
-        .score-green { stroke: #4CAF50; color: #4CAF50; }
-        .score-blue { stroke: #0000FF; color: #0000FF; }
+        .score-red {
+            stroke: #FF0000;
+            color: #FF0000;
+        }
+
+        .score-yellow {
+            stroke: #FFD700;
+            color: #FFD700;
+        }
+
+        .score-green {
+            stroke: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .score-blue {
+            stroke: #0000FF;
+            color: #0000FF;
+        }
 
         .skills-container {
             display: flex;
@@ -92,11 +107,11 @@
 
         .skills-column {
             flex: 1;
+            background: rgba(255, 255, 255, 0.9);
             padding: 2em;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
         .matched-skills-container {
             background: #e8f5e9;
             border: 2px solid #4CAF50;
@@ -104,7 +119,28 @@
 
         .missing-skills-container {
             background: #ffebee;
-            border: 2px solid #ff0000;
+            border: 2px solid #ff0000;}
+        
+        .job-category {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+            margin: 1em 0;
+        }
+
+        .job-item {
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            background: #DAA520;
+            color: #00008B;
+            border: 2px solid #b9922e;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .job-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         ul {
@@ -127,39 +163,16 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        .matched-skills li {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 2px solid #4CAF50;
-        }
-
         .missing-skills li {
             background: #ffebee;
             color: #d32f2f;
             border: 2px solid #ff0000;
         }
 
-        .job-category {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1em;
-            margin: 2em 0;
-        }
-
-        .job-item {
-            padding: 0.5em 1em;
-            border-radius: 20px;
-            background: #DAA520;
-            color: #00008B;
-            border: 2px solid #b9922e;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .job-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        .matched-skills li {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid #4CAF50;
         }
 
         pre {
@@ -171,7 +184,7 @@
             margin: 1em 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
+        
         .action-buttons {
             margin-top: 30px;
         }
@@ -203,63 +216,86 @@
         .action-buttons .edit-resume:hover {
             background-color: #c39c14;
         }
+
     </style>
 </head>
 <body>
     <div id="background-wrap">
-        <div class="x1"><div class="cloud"></div></div>
-        <div class="x2"><div class="cloud"></div></div>
-        <div class="x3"><div class="cloud"></div></div>
-        <div class="x4"><div class="cloud"></div></div>
-        <div class="x5"><div class="cloud"></div></div>
+        <div class="x1">
+            <div class="cloud"></div>
+        </div>
+    
+        <div class="x2">
+            <div class="cloud"></div>
+        </div>
+    
+        <div class="x3">
+            <div class="cloud"></div>
+        </div>
+    
+        <div class="x4">
+            <div class="cloud"></div>
+        </div>
+    
+        <div class="x5">
+            <div class="cloud"></div>
+        </div>
     </div>
-
+    
     <div id="root">
         <div class="container">
             <h1>Analysis Results</h1>
             <p class="score-description">Your Job Fit Score indicates how well your skills match the job requirements</p>
-
             <div class="score-circle">
                 <svg width="200" height="200">
                     <circle class="circle-bg" cx="100" cy="100" r="85"></circle>
-                    <circle class="circle
-                        {% if result.job_fit_score <= 30 %}score-red
-                        {% elif result.job_fit_score <= 60 %}score-yellow
-                        {% elif result.job_fit_score <= 80 %}score-green
-                        {% else %}score-blue{% endif %}"
-                        cx="100" cy="100" r="85"
-                        stroke-dasharray="534"
-                        stroke-dashoffset="{{ 534 - (534 * result.job_fit_score / 100) }}">
+                    <circle class="circle 
+                            {% if result.job_fit_score <= 30 %}
+                                score-red
+                            {% elif result.job_fit_score <= 60 %}
+                                score-yellow
+                            {% elif result.job_fit_score <= 80 %}
+                                score-green
+                            {% else %}
+                                score-blue
+                            {% endif %}"
+                            cx="100" cy="100" r="85"
+                            stroke-dasharray="534"
+                            stroke-dashoffset="{{ 534 - (534 * result.job_fit_score / 100) }}">
                     </circle>
                 </svg>
                 <div class="percentage
-                    {% if result.job_fit_score <= 30 %}score-red
-                    {% elif result.job_fit_score <= 60 %}score-yellow
-                    {% elif result.job_fit_score <= 80 %}score-green
-                    {% else %}score-blue{% endif %}">
+                        {% if result.job_fit_score <= 30 %}
+                            score-red
+                        {% elif result.job_fit_score <= 60 %}
+                            score-yellow
+                        {% elif result.job_fit_score <= 80 %}
+                            score-green
+                        {% else %}
+                            score-blue
+                        {% endif %}">
                     {{ result.job_fit_score }}%
                 </div>
             </div>
-
-            <div class="skills-container">
-                <div class="skills-column matched-skills-container">
+            
+            <div class="skills-container" style="display: flex; justify-content: space-between; gap: 20px;">
+                <div class="skills-column" style="flex: 1; padding: 20px; background-color: rgba(76, 175, 80, 0.1); border: 2px solid #4CAF50; border-radius: 10px;">
                     <h2>Matched Skills</h2>
-                    <ul class="matched-skills">
+                    <ul class="matched-skills" style="list-style: none; padding: 0;">
                         {% for skill in result.matched_skills %}
-                            <li>{{ skill }}</li>
+                            <li style="background: #e8f5e9; color: #2e7d32; border: 2px solid #4CAF50; padding: 8px 16px; margin: 5px; border-radius: 20px;">{{ skill }}</li>
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="skills-column missing-skills-container">
+                <div class="skills-column" style="flex: 1; padding: 20px; background-color: rgba(255, 0, 0, 0.1); border: 2px solid #ff0000; border-radius: 10px;">
                     <h2>Missing Skills</h2>
-                    <ul class="missing-skills">
+                    <ul class="missing-skills" style="list-style: none; padding: 0;">
                         {% for skill in result.missing_skills %}
-                            <li>{{ skill }}</li>
+                            <li style="background: #ffebee; color: #d32f2f; border: 2px solid #ff0000; padding: 8px 16px; margin: 5px; border-radius: 20px;">{{ skill }}</li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
-
             <div class="recommended-job-container" style="margin: 2em 0; padding: 20px; background-color: #FFF9E6; border: 2px solid #DAA520; border-radius: 10px; text-align: center;">
                 <h2 style="color: #00008B; margin-bottom: 0.5em;">Recommended Job Categories</h2>
                 <div class="job-category">
@@ -270,27 +306,37 @@
                     {% endfor %}
                 </div>
             </div>
-
             <h2>Job Description</h2>
             <pre>{{ result.job_description }}</pre>
             <h2>Resume Text</h2>
             <pre>{{ result.resume_text }}</pre>
-
-            <div class="action-buttons">
+            
+            <div class="action-buttons"></div>
                 <button class="go-back" onclick="goBack()">Go Back</button>
                 <button class="edit-resume" onclick="goToEditResume()">Edit Resume</button>
-            </div>
         </div>
     </div>
-
-    <script>
-        function goBack() {
-            window.location.href = 'http://localhost:5173/';
-        }
-
-        function goToEditResume() {
-            window.location.href = '/edit-resume';
-        }
-    </script>
 </body>
 </html>
+<script>
+    function goToEditResume() {
+        window.location.href = '/edit-resume';
+    }
+
+    function goBack() {
+        window.location.href = 'http://localhost:5173/';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create initial clouds
+        for(let i = 0; i < 5; i++) {
+            setTimeout(createCloud, i * 1000);
+        }
+
+        // Create new clouds periodically
+        setInterval(createCloud, 10000);
+    });
+
+
+    
+</script>
