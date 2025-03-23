@@ -120,6 +120,28 @@
         .missing-skills-container {
             background: #ffebee;
             border: 2px solid #ff0000;}
+        
+        .job-category {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+            margin: 1em 0;
+        }
+
+        .job-item {
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            background: #DAA520;
+            color: #00008B;
+            border: 2px solid #b9922e;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .job-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
 
         ul {
             list-style: none;
@@ -219,13 +241,18 @@
                     </ul>
                 </div>
             </div>
-
+            <div class="recommended-job-container" style="margin: 2em 0; padding: 20px; background-color: #FFF9E6; border: 2px solid #DAA520; border-radius: 10px; text-align: center;">
+                <h2 style="color: #00008B; margin-bottom: 0.5em;">Recommended Job Category</h2>
+                <div class="job-category">
+                    <div class="job-item">{{result.recommended_job}}</div>
+                </div>
+            </div>
             <h2>Job Description</h2>
             <pre>{{ result.job_description }}</pre>
             <h2>Resume Text</h2>
             <pre>{{ result.resume_text }}</pre>
-            <h2>Recommended Job Category</h2>
-            <p>{{ result.recommended_job }}</p>
+            
+            
             <button onclick="goBack()" style="display: inline-block; margin-top: 20px; padding: 15px 32px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; transition: background-color 0.3s; border: none; cursor: pointer;">Go Back</button>
         </div>
     </div>
