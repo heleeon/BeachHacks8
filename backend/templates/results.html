@@ -41,6 +41,12 @@
             margin-bottom: 1.5em;
         }
 
+        .score-description {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 1em;
+        }
+
         .score-circle {
             width: 200px;
             height: 200px;
@@ -71,8 +77,8 @@
             font-size: 2em;
             font-weight: bold;
         }
-                /* New score color classes */
-                .score-red {
+
+        .score-red {
             stroke: #FF0000;
             color: #FF0000;
         }
@@ -92,13 +98,28 @@
             color: #0000FF;
         }
 
-        .skills {
+        .skills-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 2em;
+            margin: 2em 0;
+        }
+
+        .skills-column {
+            flex: 1;
             background: rgba(255, 255, 255, 0.9);
             padding: 2em;
             border-radius: 12px;
-            margin: 2em 0;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .matched-skills-container {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+        }
+
+        .missing-skills-container {
+            background: #ffebee;
+            border: 2px solid #ff0000;}
 
         ul {
             list-style: none;
@@ -110,8 +131,6 @@
         }
 
         li {
-            background: #4CAF50;
-            color: white;
             padding: 0.5em 1em;
             border-radius: 20px;
             transition: all 0.3s ease;
@@ -123,11 +142,15 @@
         }
 
         .missing-skills li {
-            background: #FF6347;
+            background: #ffebee;
+            color: #d32f2f;
+            border: 2px solid #ff0000;
         }
 
         .matched-skills li {
-            background: #4CAF50;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid #4CAF50;
         }
 
         pre {
@@ -145,6 +168,7 @@
     <div id="root">
         <div class="container">
             <h1>Analysis Results</h1>
+            <p class="score-description">Your Job Fit Score indicates how well your skills match the job requirements</p>
             <div class="score-circle">
                 <svg width="200" height="200">
                     <circle class="circle-bg" cx="100" cy="100" r="85"></circle>
@@ -176,25 +200,39 @@
                     {{ result.job_fit_score }}%
                 </div>
             </div>
-            <h2>Matched Skills</h2>
-            <ul class="matched-skills">
-                {% for skill in result.matched_skills %}
-                    <li>{{ skill }}</li>
-                {% endfor %}
-            </ul>
-            <h2>Missing Skills</h2>
-            <ul class="missing-skills">
-                {% for skill in result.missing_skills %}
-                    <li>{{ skill }}</li>
-                {% endfor %}
-            </ul>
+            
+            <div class="skills-container" style="display: flex; justify-content: space-between; gap: 20px;">
+                <div class="skills-column" style="flex: 1; padding: 20px; background-color: rgba(76, 175, 80, 0.1); border: 2px solid #4CAF50; border-radius: 10px;">
+                    <h2>Matched Skills</h2>
+                    <ul class="matched-skills" style="list-style: none; padding: 0;">
+                        {% for skill in result.matched_skills %}
+                            <li style="background: #e8f5e9; color: #2e7d32; border: 2px solid #4CAF50; padding: 8px 16px; margin: 5px; border-radius: 20px;">{{ skill }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="skills-column" style="flex: 1; padding: 20px; background-color: rgba(255, 0, 0, 0.1); border: 2px solid #ff0000; border-radius: 10px;">
+                    <h2>Missing Skills</h2>
+                    <ul class="missing-skills" style="list-style: none; padding: 0;">
+                        {% for skill in result.missing_skills %}
+                            <li style="background: #ffebee; color: #d32f2f; border: 2px solid #ff0000; padding: 8px 16px; margin: 5px; border-radius: 20px;">{{ skill }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
             <h2>Job Description</h2>
             <pre>{{ result.job_description }}</pre>
             <h2>Resume Text</h2>
             <pre>{{ result.resume_text }}</pre>
             <h2>Recommended Job Category</h2>
             <p>{{ result.recommended_job }}</p>
+            <button onclick="goBack()" style="display: inline-block; margin-top: 20px; padding: 15px 32px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; transition: background-color 0.3s; border: none; cursor: pointer;">Go Back</button>
         </div>
     </div>
 </body>
 </html>
+<script>
+    function goBack() {
+    window.location.href = 'http://localhost:5173/';
+}
+</script>
