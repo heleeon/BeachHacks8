@@ -41,10 +41,10 @@ ClearSkies Resume is designed for job searchers who would like to quickly learn 
 - You may need to install npm, node, flask, and/or vite separately.
 
 ## Authors
-- Sophia
-- Helen
-- Phuong
-- Amy
+- Sophia Tejada
+- Helen Ton
+- Phuong Tran
+- Amy Nguyen
 
 ## Acknowledgements
 Frameworks, Code Snippets, etc.
