@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Resume</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background: #e6f6ff;
+        }
+
+        h1 {
+            color: #00008B;
+            text-align: center;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: monospace;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .back-button {
+            background: #DAA520;
+            margin-left: 10px;
+        }
+
+        .back-button:hover {
+            background: #c39c14;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Your Resume</h1>
+
+    {% if request.args.get('saved') %}
+        <p style="color: green; text-align: center;">Resume saved successfully!</p>
+    {% endif %}
+
+    <form method="POST" action="/edit-resume">
+        <textarea name="edited_resume">{{ resume_text }}</textarea>
+        <br>
+        <button type="submit" name="action" value="save">Save Only</button>
+        <button type="submit" name="action" value="save_analyze" class="back-button">Save & Analyze</button>
+        <button type="button" class="back-button" onclick="window.location.href='/'">Cancel</button>
+    </form>
+</body>
+</html>
