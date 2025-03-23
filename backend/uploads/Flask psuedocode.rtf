@@ -1,0 +1,239 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica;\f2\fmodern\fcharset0 Courier-Bold;
+\f3\froman\fcharset0 Times-Roman;\f4\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;\red255\green255\blue255;
+\red0\green0\blue0;\red255\green255\blue255;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c0\c1\c1;\cssrgb\c100000\c100000\c99985;
+\cssrgb\c0\c1\c1;\cssrgb\c100000\c100000\c99985;\cssrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww16900\viewh18520\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\qc\partightenfactor0
+
+\f0\b\fs48 \cf0 Intro to Flask
+\f1\b0\fs24 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 Installing Flask
+\f0\b\fs28 \
+$ pip install flask\
+\
+
+\f1\b0\fs24 Running Flask (localhost)
+\f0\b\fs28 \
+$ python3 app.py\
+\
+
+\f1\b0\fs24 Running Flask from an IP address (localhost only runs on your local computer, while this will run on any computer in the network)\
+
+\f0\b\fs28 $ flask run \'97host <IP>\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs36 \cf0 Flask Big Picture
+\f1\b0\fs24 \
+client \'97-> server [route = /id] \'97> view functions [func for \'91/id\'92]\
+client makes a request to the Flask server. Flask server creates a request object (encapsulates http request) for the view function\
+The view function sends a response back to the Flask server (string)\
+\
+__________________________________________________________________________________________________
+\f0\b\fs28 \
+
+\fs36 Flask Syntax\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf0 from flask import Flask\
+\
+app = Flask(__name__)\
+@app.route(\'91/\'91)\
+def function_name():\
+	return \'92return function task back when route is called by client\'92\
+\
+if __name__ == \'91__main__\'92:\
+	app.run(debug=True)\
+\
+__________________________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs36 \cf0 Requests library\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf0 Installing requests 
+\f0\b\fs28 \
+$ pip install requests\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs36 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf0 Used for making HTTP requests (e.g. GET\'92, \'91PUT\'92, \'91DELETE\'92 and \'91POST\'92)\
+	
+\fs28 - Sending a \'91
+\f0\b GET
+\f1\b0 \'92 request to retrieve data from an API\
+	- Sending a \'91
+\f0\b POST
+\f1\b0 \'92 request to send data (like form data or JSON) to an API)
+\fs24 	\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b \cf0 Requests
+\f1\b0  makes it simple to interact with APIs, send data, and retrieve responses from web servers\
+Otherwise we\'92d have to deal with raw HTTP requests (complex)\
+\
+
+\f0\b\fs36 \'91GET\'92 Request Syntax \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\fs26 \cf0 \expnd0\expndtw0\kerning0
+requests.get(url, params=None, **kwargs)
+\f3\b0\fs24 : Send a GET request.
+\f0\b\fs36 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf0 	# EXAMPLE:\
+	# Send a GET request to the specified URL\
+	response = 
+\fs28 requests.
+\f0\b get
+\f1\b0 ('
+\f0\b https://jsonplaceholder.typicode.com/posts
+\f1\b0 ')
+\fs24 \
+\
+	# Check if the request was successful\
+	if response.status_code == 200:\
+    		print("Success!")\
+    		print(response.text)  # The content of the response\
+	else:\
+    		print("Failed to retrieve data!")\
+\
+
+\f0\b\fs36 Handling JSON Data
+\f1\b0\fs24 \
+	# Send a GET request to a URL that returns JSON\
+	# Parse the response JSON into a Python dictionary\
+	json_data = response.json()\
+\
+	# Accessing the data\
+	for post in json_data:\
+    		print(post['title'])\
+\
+
+\f0\b\fs36 \'91POST\'92 Request Syntax \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\fs26 \cf0 \expnd0\expndtw0\kerning0
+requests.post(url, data=None, json=None, **kwargs)
+\f3\b0\fs24 : Send a POST request (with form data or JSON).\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1 \cf0 \kerning1\expnd0\expndtw0 	# EXAMPLE:\
+	# Define the data you want to send\
+	
+\f0\b\fs28 data
+\f1\b0\fs24  = \{\
+    		'title': 'foo',\
+    		'body': 'bar',\
+    		'userId': 1\
+	\}\
+	# Send a POST request\
+	response = 
+\fs28 requests
+\f0\b .post
+\f1\b0 ('
+\f0\b https://jsonplaceholder.typicode.com/posts', json=data)
+\f1\b0\fs24 \
+\
+	# Check the response\
+	if response.status_code == 201:  # 201 is the status code for "Created"\
+    		print("Data posted successfully!")\
+    		print(response.json())  # Return the JSON response\
+	else:\
+    		print("Failed to post data!")\
+\
+__________________________________________________________________________________________________
+\f0\b\fs36 \
+Jsonify library\
+
+\f1\b0\fs24 Converts Python dictionaries into a JSON response format (object) \
+\
+__________________________________________________________________________________________________\
+
+\f0\b\fs36 \
+BeachHacks Backend Pseudocode 
+\f1\b0\fs28 \
+1. Initialize the Flask Application\
+
+\fs24    - Create a new Flask app instance.\
+\
+
+\fs28 2. Define the Home Route (`/`)\
+	
+\f4\fs26 \cf3 \expnd0\expndtw0\kerning0
+@app.route(\'93/\'93)
+\f1\fs28 \cf0 \kerning1\expnd0\expndtw0 \
+
+\fs24      - When a user visits the root URL (`/`):\
+     - Display a welcome message: "Welcome to the Job Match App!"\
+\
+
+\fs28 3. Define the Upload Route (`/upload`)\
+
+\f4\fs26 \cf5 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec6 	@app.route('/upload', methods=['POST'])\
+\pard\pardeftab720\partightenfactor0
+\cf5 \strokec6 	def upload_file():\
+		# Check if a file was uploaded\
+		# Save the file\
+		# Process the file using spaCy\
+			resume_text = extract_text(file_path)	//sep func for logic\
+		# Return analysis data (response)\
+			response = \{\'91skills\'92 : [\'91Python\'92,\'92Data Science\'92\'85], \'91job_fit_score\'92 : 75\}\
+			return jsonify(response)\cf7 \strokec7 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\fs28 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+
+\fs24    - When the user uploads a file using a POST request to `/upload`:\
+     1. Check if the request contains a file:\
+        - If no file is provided (`'resume'` key missing from request):\
+          - Return an error response with message: "No file part" and HTTP status 400.\
+     2. Retrieve the uploaded file from the request:\
+        - Assign the uploaded file to a variable called `file`.\
+     3. Check if the file has no filename:\
+        - If the filename is empty (`file.filename == ''`):\
+          - Return an error response with message: "No selected file" and HTTP status 400.\
+     4. Save the uploaded file:\
+        - Define a folder (`uploads`) to store uploaded files.\
+        - If the folder doesn't exist, create it (`os.makedirs`).\
+        - Generate a file path based on the uploaded file's name.\
+        - Save the file to the defined `UPLOAD_FOLDER` path.\
+\
+     5. Extract text from the uploaded file:\
+        - Call the `extract_text` function, passing the file path to simulate text extraction.\
+        - For now, this function just reads the file as a string (to be improved later with actual text extraction methods, e.g., PyPDF2, python-docx).\
+     \
+     6. Simulate resume analysis:\
+        - Instead of using a real NLP model (like spaCy), return static data for now.\
+        - Create a response with the following simulated analysis:\
+          - `skills`: a static list of skills (`['Python', 'Data Science', 'Machine Learning']`).\
+          - `job_fit_score`: a static score (`75`).\
+\
+     7. Return the simulated analysis result as a JSON response:\
+        - Send the response back to the user containing the skills and job fit score.\
+\
+
+\fs28 4. Define the Text Extraction Function (`extract_text`)\
+
+\fs24    - Simulate text extraction from the uploaded file:\
+     - Open the file located at `file_path`.\
+     - Read the file's contents as text and return it.\
+     - Handle any errors (e.g., file not found or unreadable) and return an error message.\
+\
+
+\fs28 5. Run the Flask Application\
+
+\fs24    - Start the Flask application in debug mode when this script is executed directly (`app.run(debug=True)`).\
+\
+\
+\
+\
+}

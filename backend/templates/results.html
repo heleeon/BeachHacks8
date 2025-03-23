@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        #root {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, #e6f6ff 0%, #99d3ff 50%, #004d99 100%);
+            min-height: 100vh;
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2em;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            color: #00008b;            
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1.5em;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin: 2em auto;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: #ddd;
+            stroke-width: 15;
+        }
+
+        .circle {
+            fill: none;
+            stroke: #4CAF50;
+            stroke-width: 15;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+
+        .percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .skills {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2em;
+            border-radius: 12px;
+            margin: 2em 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+        }
+
+        li {
+            background: #4CAF50;
+            color: white;
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        pre {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5em;
+            border-radius: 8px;
+            text-align: left;
+            overflow-x: auto;
+            margin: 1em 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="container">
+            <h1>Analysis Results</h1>
+            <div class="score-circle">
+                <svg width="200" height="200">
+                    <circle class="circle-bg" cx="100" cy="100" r="85"></circle>
+                    <circle class="circle" cx="100" cy="100" r="85"
+                            stroke-dasharray="534"
+                            stroke-dashoffset="{{ 534 - (534 * result.job_fit_score / 100) }}">
+                    </circle>
+                </svg>
+                <div class="percentage">{{ result.job_fit_score }}%</div>
+            </div>
+            <div class="skills">
+                <h2>Detected Skills</h2>
+                <ul>
+                    {% for skill in result.skills %}
+                        <li>{{ skill }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <h2>Job Description</h2>
+            <pre>{{ result.job_description }}</pre>
+            <h2>Resume Text</h2>
+            <pre>{{ result.resume_text }}</pre>
+        </div>
+    </div>
+</body>
+</html>

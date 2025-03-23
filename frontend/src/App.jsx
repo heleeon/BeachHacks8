@@ -72,8 +72,7 @@ function App() {
       </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>
-        <h3>Resume Skills: {resumeSkills.length > 0 ? resumeSkills.join(", ") : "No skills detected"}</h3>
-        <h3>Job Fit Score: {jobFitScore !== null ? `${jobFitScore}%` : "Not available"}</h3>
+       
       </div>
     </div>
   );
