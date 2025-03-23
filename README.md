@@ -37,6 +37,10 @@ ClearSkies Resume is designed for job searchers who would like to quickly learn 
 - In terminal, navigate to the frontend folder and enter npm run dev.
 - In terminal, navigate to the backend folder and run the app.py folder by entering one of the following: python app.py or python3 app.py.
 
+## Datasets
+https://www.kaggle.com/datasets/gauravduttakiit/resume-dataset
+https://www.kaggle.com/datasets/kshitizregmi/jobs-and-job-description
+
 ## Help
 - You may need to install npm, node, flask, and/or vite separately.
 
