@@ -56,7 +56,6 @@
 
         .circle {
             fill: none;
-            stroke: #4CAF50;
             stroke-width: 15;
             stroke-linecap: round;
             transform: rotate(-90deg);
@@ -71,7 +70,27 @@
             transform: translate(-50%, -50%);
             font-size: 2em;
             font-weight: bold;
+        }
+
+        /* New score color classes */
+        .score-red {
+            stroke: #FF0000;
+            color: #FF0000;
+        }
+
+        .score-yellow {
+            stroke: #FFD700;
+            color: #FFD700;
+        }
+
+        .score-green {
+            stroke: #4CAF50;
             color: #4CAF50;
+        }
+
+        .score-blue {
+            stroke: #0000FF;
+            color: #0000FF;
         }
 
         .skills {
@@ -122,12 +141,33 @@
             <div class="score-circle">
                 <svg width="200" height="200">
                     <circle class="circle-bg" cx="100" cy="100" r="85"></circle>
-                    <circle class="circle" cx="100" cy="100" r="85"
+                    <circle class="circle 
+                            {% if result.job_fit_score <= 30 %}
+                                score-red
+                            {% elif result.job_fit_score <= 60 %}
+                                score-yellow
+                            {% elif result.job_fit_score <= 80 %}
+                                score-green
+                            {% else %}
+                                score-blue
+                            {% endif %}"
+                            cx="100" cy="100" r="85"
                             stroke-dasharray="534"
                             stroke-dashoffset="{{ 534 - (534 * result.job_fit_score / 100) }}">
                     </circle>
                 </svg>
-                <div class="percentage">{{ result.job_fit_score }}%</div>
+                <div class="percentage
+                        {% if result.job_fit_score <= 30 %}
+                            score-red
+                        {% elif result.job_fit_score <= 60 %}
+                            score-yellow
+                        {% elif result.job_fit_score <= 80 %}
+                            score-green
+                        {% else %}
+                            score-blue
+                        {% endif %}">
+                    {{ result.job_fit_score }}%
+                </div>
             </div>
             <div class="skills">
                 <h2>Detected Skills</h2>
