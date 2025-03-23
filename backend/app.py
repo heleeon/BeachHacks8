@@ -118,28 +118,36 @@ def analyze_resume(resume_text, job_description):
 
 
 def find_job_category(resume_text):
+    # Load datasets from the data folder
     resume_csv = "data/UpdatedResumeDataSet.csv"
     job_csv = "data/job_title_des.csv"
-
-    # Load datasets
     df_resume = pd.read_csv(resume_csv)
     df_job = pd.read_csv(job_csv)
 
-    # For training, use the resume dataset.
+    # Prepare training data: X = resume text, y = category labels
     X = df_resume['Resume']
     y = df_resume['Category']
 
+    # Create the pipeline with TF-IDF vectorization, chi² feature selection, and Logistic Regression
     pipeline = Pipeline([
         ('tfidf', TfidfVectorizer(stop_words='english')),
         ('chi2', SelectKBest(chi2, k=1000)),
         ('clf', LogisticRegression(max_iter=1000))
     ])
 
+    # Fit the pipeline on the entire dataset for prediction
     pipeline.fit(X, y)
 
-    # Predict category
-    predicted_category = pipeline.predict([resume_text])[0]
-    return predicted_category
+    # Predict the category and probabilities for the input resume
+    predicted_proba = pipeline.predict_proba([resume_text])[0]
+    classes = pipeline.named_steps['clf'].classes_
+
+    # Sort indices by probability in descending order and take the top 10
+    sorted_indices = np.argsort(-predicted_proba)
+    top_indices = sorted_indices[:10]
+    top_categories = [classes[j] for j in top_indices]
+
+    return top_categories
 
 if __name__ == '__main__':
     app.run(debug=True)

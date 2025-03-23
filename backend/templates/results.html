@@ -184,6 +184,7 @@
             margin: 1em 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        
     </style>
 </head>
 <body>
@@ -222,31 +223,18 @@
                     {{ result.job_fit_score }}%
                 </div>
             </div>
-            
-            <div class="skills-container" style="display: flex; justify-content: space-between; gap: 20px;">
-                <div class="skills-column" style="flex: 1; padding: 20px; background-color: rgba(76, 175, 80, 0.1); border: 2px solid #4CAF50; border-radius: 10px;">
-                    <h2>Matched Skills</h2>
-                    <ul class="matched-skills" style="list-style: none; padding: 0;">
-                        {% for skill in result.matched_skills %}
-                            <li style="background: #e8f5e9; color: #2e7d32; border: 2px solid #4CAF50; padding: 8px 16px; margin: 5px; border-radius: 20px;">{{ skill }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="skills-column" style="flex: 1; padding: 20px; background-color: rgba(255, 0, 0, 0.1); border: 2px solid #ff0000; border-radius: 10px;">
-                    <h2>Missing Skills</h2>
-                    <ul class="missing-skills" style="list-style: none; padding: 0;">
-                        {% for skill in result.missing_skills %}
-                            <li style="background: #ffebee; color: #d32f2f; border: 2px solid #ff0000; padding: 8px 16px; margin: 5px; border-radius: 20px;">{{ skill }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            <div class="recommended-job-container" style="margin: 2em 0; padding: 20px; background-color: #FFF9E6; border: 2px solid #DAA520; border-radius: 10px; text-align: center;">
-                <h2 style="color: #00008B; margin-bottom: 0.5em;">Recommended Job Category</h2>
-                <div class="job-category">
-                    <div class="job-item">{{result.recommended_job}}</div>
-                </div>
-            </div>
+            <h2>Matched Skills</h2>
+            <ul class="matched-skills">
+                {% for skill in result.matched_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+            <h2>Missing Skills</h2>
+            <ul class="missing-skills">
+                {% for skill in result.missing_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
             <h2>Job Description</h2>
             <pre>{{ result.job_description }}</pre>
             <h2>Resume Text</h2>
@@ -258,8 +246,3 @@
     </div>
 </body>
 </html>
-<script>
-    function goBack() {
-    window.location.href = 'http://localhost:5173/';
-}
-</script>
