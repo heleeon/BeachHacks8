@@ -264,9 +264,13 @@
                 </div>
             </div>
             <div class="recommended-job-container" style="margin: 2em 0; padding: 20px; background-color: #FFF9E6; border: 2px solid #DAA520; border-radius: 10px; text-align: center;">
-                <h2 style="color: #00008B; margin-bottom: 0.5em;">Recommended Job Category</h2>
+                <h2 style="color: #00008B; margin-bottom: 0.5em;">Recommended Job Categories</h2>
                 <div class="job-category">
-                    <div class="job-item">{{result.recommended_job}}</div>
+                    {% for category in result.recommended_job %}
+                        <div class="job-container">
+                            <div class="job-item">{{ category }}</div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
             <h2>Job Description</h2>
