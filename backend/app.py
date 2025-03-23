@@ -11,6 +11,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.linear_model import LogisticRegression
+import spacy
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -22,6 +24,23 @@ os.makedirs(RESULTS_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['RESULTS_FOLDER'] = RESULTS_FOLDER
 
+# Load spaCy model
+nlp = spacy.load('en_core_web_sm')
+
+# Expanded buzzwords common across industries (as a Python set)
+BUZZWORDS = {
+    "candidate", "experience", "proficient", "opportunity", "requirement",
+    "results-driven", "self-starter", "team player", "innovative", "dynamic",
+    "motivated", "strategic", "competitive", "leadership", "collaborative"
+}
+
+# Expanded skill map (canonical skills to list of synonyms)
+SKILL_MAP = {
+    "python": ["python", "python programming", "py"],
+    "java": ["java", "jdk", "j2ee"],
+    "c++": ["cpp", "c plus plus"],
+    "javascript": ["javascript", "js", "typescript", "nodejs"]
+}
 # Home route
 @app.route("/")
 def home():
@@ -91,10 +110,33 @@ def extract_text_from_pdf(file_path):
         print(f"Error extracting text with pdfplumber: {e}")
         return None
 
-
 def extract_keywords(text):
-    words = text.lower().split()
-    return set(word.strip('.,!?()[]') for word in words if word.isalpha())
+    doc = nlp(text.lower())
+
+    # Extract noun keywords and noun phrases
+    noun_keywords = {token.lemma_ for token in doc if token.pos_ in ["NOUN", "PROPN"]}
+    noun_phrases = {" ".join(token.lemma_ for token in chunk if token.pos_ in ["NOUN", "PROPN", "ADJ"])
+                    for chunk in doc.noun_chunks if not all(tok.is_stop for tok in chunk)}
+
+    # Combine extracted keywords
+    combined_keywords = noun_keywords.union(noun_phrases)
+
+    # Normalize and filter keywords using skill map and buzzwords
+    normalized = set()
+    for skill in combined_keywords:
+        lower_skill = skill.lower()
+        if lower_skill in BUZZWORDS or any(buzz in lower_skill for buzz in BUZZWORDS):
+            continue
+        found = False
+        for canonical_form, variants in SKILL_MAP.items():
+            if any(variant in lower_skill for variant in variants):
+                normalized.add(canonical_form)
+                found = True
+                break
+        if not found:
+            normalized.add(skill)
+
+    return normalized
 
 def compare_resume_with_job(resume_text, job_text):
     resume_keywords = extract_keywords(resume_text)
