@@ -1,9 +1,15 @@
+# Libraries for web app functionality
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import os
 import uuid
 import json
+
+# Libraries for pdf reading and keywords extraction
 import pdfplumber
+import spacy
+
+# Libraries for machine learning (job category prediction)
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import cross_val_score
@@ -11,12 +17,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.linear_model import LogisticRegression
-import spacy
-import json
 
+# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
+# Create folders for uploads (user's resume) and program results 
 UPLOAD_FOLDER = 'uploads'
 RESULTS_FOLDER = 'results'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -24,24 +30,24 @@ os.makedirs(RESULTS_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['RESULTS_FOLDER'] = RESULTS_FOLDER
 
+# Global variables for extract_keywords function
 # Load spaCy model
 nlp = spacy.load('en_core_web_sm')
-
-# Expanded buzzwords common across industries (as a Python set)
+# Expand buzzwords to filter out
 BUZZWORDS = {
     "candidate", "experience", "proficient", "opportunity", "requirement",
     "results-driven", "self-starter", "team player", "innovative", "dynamic",
     "motivated", "strategic", "competitive", "leadership", "collaborative"
 }
-
-# Expanded skill map (canonical skills to list of synonyms)
+# Expand skill map so different varations of a skill are equivalent
 SKILL_MAP = {
     "python": ["python", "python programming", "py"],
     "java": ["java", "jdk", "j2ee"],
     "c++": ["cpp", "c plus plus"],
     "javascript": ["javascript", "js", "typescript", "nodejs"]
 }
-# Home route
+
+# Home route (default)
 @app.route("/")
 def home():
     return "Welcome to the Job Match App!"
@@ -57,23 +63,31 @@ def get_results(result_id):
     except FileNotFoundError:
         return "<h1>Result not found</h1>", 404
 
-# Analyze route
+# Route for analyzing resume (Main usecase)
 @app.route('/analyze', methods=['POST'])
 def analyze():
+    """
+    Expects:
+      - 'resume': PDF or DOCX file
+      - 'job_description': Text of the job listing
+    """
+    # Get job description
     job_description = request.form.get('job_description')
     if not job_description:
         return jsonify({'error': 'Job description is required'}), 400
 
+    # Get resume file 
     if 'resume' not in request.files:
         return jsonify({'error': 'Resume file is required'}), 400
-    
     file = request.files['resume']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
+    # Save resume file in Uploads folder
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
 
+    # Extract text from resume
     try:
         resume_text = extract_text_from_pdf(file_path)
         if not resume_text:
@@ -88,11 +102,13 @@ def analyze():
     recommended_job = find_job_category(resume_text)
     result['recommended_job'] = recommended_job
 
+    # Save result in Results folder
     result_id = str(uuid.uuid4())
     result_path = os.path.join(app.config['RESULTS_FOLDER'], f"{result_id}.json")
     with open(result_path, 'w') as f:
         json.dump(result, f)
 
+    # Return result ID and redirect URL
     return jsonify({
         'result_id': result_id,
         'redirect_url': f'/results/{result_id}'
@@ -100,6 +116,10 @@ def analyze():
 
 
 def extract_text_from_pdf(file_path):
+    '''
+    Extracts text from a PDF file using pdfplumber.
+    Returns the extracted text as a string.
+    '''
     try:
         text = ''
         with pdfplumber.open(file_path) as pdf:
@@ -111,6 +131,10 @@ def extract_text_from_pdf(file_path):
         return None
 
 def extract_keywords(text):
+    '''
+    Extracts keywords from the given text using spaCy.
+    Returns a set of keywords.
+    '''
     doc = nlp(text.lower())
 
     # Extract noun keywords and noun phrases
@@ -139,6 +163,10 @@ def extract_keywords(text):
     return normalized
 
 def compare_resume_with_job(resume_text, job_text):
+    '''
+    Compares the keywords in the resume with those in the job description.
+    Returns a list of matched skills and missing skills.
+    '''
     resume_keywords = extract_keywords(resume_text)
     job_keywords = extract_keywords(job_text)
     matched_skills = resume_keywords.intersection(job_keywords)
@@ -147,6 +175,10 @@ def compare_resume_with_job(resume_text, job_text):
 
 
 def analyze_resume(resume_text, job_description):
+    '''
+    Analyzes the resume against the job description.
+    Returns a dictionary with skills, matched skills, missing skills, and job fit score.
+    '''
     matched_skills, missing_skills = compare_resume_with_job(resume_text, job_description)
     job_fit_score = max(0, 100 - len(missing_skills) * 5)
     return {
@@ -160,6 +192,10 @@ def analyze_resume(resume_text, job_description):
 
 
 def find_job_category(resume_text):
+    '''
+    Predicts the job category based on the resume text using a pre-trained model.
+    Returns the top 10 predicted job categories.
+    '''
     # Load datasets from the data folder
     resume_csv = "data/UpdatedResumeDataSet.csv"
     job_csv = "data/job_title_des.csv"
